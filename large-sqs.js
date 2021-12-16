@@ -1,14 +1,13 @@
 const AWS = require('aws-sdk');
-const mongoose = require('mongoose');
 
 class LargeSqs {
-    constructor(connection, collection, queueUrl, sqsOptions, mongoTtl) {
+    constructor(connection, collection, queueUrl, sqsOptions, ttl=1296000) {
         this.sqs = new AWS.SQS(sqsOptions);
         this.queue = queueUrl;
         this.connection = connection;
-        this.model = connection.models[collection] || connection.model(collection, new mongoose.Schema({
+        this.model = connection.models[collection] || connection.model(collection, connection.base.Schema({
             payload: Object,
-            created_at: Date
+            created_at: { type: Date, expires: ttl }
         }, {
             autoCreate: true,
             collection
