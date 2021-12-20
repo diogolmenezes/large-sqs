@@ -62,8 +62,9 @@ class LargeSqs {
             queueUrl: this.queue,
             ...sqsConsumerOptions,
             handleMessage: async (message) => {
-                this.getRecord(message, handleMessage);
-            }
+                return await this.getRecord(message, handleMessage);
+            },
+            sqs: this.sqs,
         });
 
         app.on('error', onError);
