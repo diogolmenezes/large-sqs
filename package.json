@@ -1,6 +1,6 @@
 {
   "name": "large-sqs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Use larger messages with AWS SQS queue and MongoDb",
   "main": "index.js",
   "author": "Diogo Menezes <diogolmenezes@gmail.com>",
