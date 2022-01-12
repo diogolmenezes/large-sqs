@@ -34,7 +34,7 @@ class LargeSqs {
             return queueResult;
         } catch (error) {
             // remove mongo record if can't send the message
-            await this.model.deleteOne({ id: record.id });
+            await this.model.deleteOne({ _id: record.id });
             throw error;
         }
     }
@@ -47,13 +47,13 @@ class LargeSqs {
          const json = JSON.parse(message.Body);
 
          // recover record from mongodb
-         const record = await this.model.findOne({ id: json.id });
+         const record = await this.model.findOne({ _id: json.id });
          
          // send record to application :)
          await handleMessage({sqsId: message.MessageId, ...record?.payload});
 
          // remove record from mongodb
-         await this.model.deleteOne({ id: json.id });
+         await this.model.deleteOne({ _id: json.id });
     }
 
     // Listen SQS queue and retreive the real message on mongoDB
