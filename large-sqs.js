@@ -50,7 +50,7 @@ class LargeSqs {
          const record = await this.model.findOne({ id: json.id });
          
          // send record to application :)
-         await handleMessage(record?.payload);
+         await handleMessage({sqsId: message.MessageId, ...record?.payload});
 
          // remove record from mongodb
          await this.model.deleteOne({ id: json.id });
@@ -69,6 +69,21 @@ class LargeSqs {
 
         app.on('error', onError);
         app.on('processing_error', onProcessingError);
+        app.on('timeout_error', (err, message) => {
+            console.log(`LargeSqs => Timeout Error [${err}] [${message.MessageId}]`)
+        })    
+        app.on('message_received', (message) => {
+            console.log(`LargeSqs => Message was received [${message.MessageId}]`)
+        })
+        app.on('message_processed', (message) => {
+            console.log(`LargeSqs => Message was successfully processed and removed from the queue [${message.MessageId}]`)
+        })
+        app.on('stopped', () => {
+            console.log(`LargeSqs => Consumer finally stops its work.`)
+        })
+        // app.on('empty', () => {
+        //     console.log(`LargeSqs => Empty queue, all messages have been consumed`)
+        // })
         app.start();
     }
 
