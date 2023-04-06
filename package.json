@@ -1,6 +1,6 @@
 {
   "name": "large-sqs",
-  "version": "1.0.1",
+  "version": "3.0.1",
   "description": "Use larger messages with AWS SQS queue and MongoDb",
   "main": "index.js",
   "author": "Diogo Menezes <diogolmenezes@gmail.com>",
@@ -23,7 +23,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1046.0",
-    "sqs-consumer": "^5.6.0"
+    "@aws-sdk/client-sqs": "^3.306.0",
+    "sqs-consumer": "^7.0.3"
   }
 }

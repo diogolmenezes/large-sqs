@@ -1,9 +1,9 @@
-const AWS = require('aws-sdk');
+const { SQSClient, SendMessageCommand  } = require('@aws-sdk/client-sqs');
 const { Consumer } = require('sqs-consumer');
 
 class LargeSqs {
     constructor(connection, collection, queueUrl, sqsOptions, ttl=1296000) {
-        this.sqs = new AWS.SQS(sqsOptions);
+        this.sqs = new SQSClient(sqsOptions);
         this.queue = queueUrl;
         this.connection = connection;
         this.model = connection.models[collection] || connection.model(collection, connection.base.Schema({
@@ -24,13 +24,15 @@ class LargeSqs {
         });
 
         try {
-            // sending mongoId to sqs queue
-            const queueResult = await this.sqs.sendMessage({
+            const sendMessageCommand = new SendMessageCommand({
                 MessageBody: JSON.stringify({
                     id: record.id
                 }),
                 QueueUrl: this.queue
-            }).promise();
+            });
+
+            // sending mongoId to sqs queue
+            const queueResult = await this.sqs.send(sendMessageCommand)
             return queueResult;
         } catch (error) {
             // remove mongo record if can't send the message
